@@ -30,6 +30,7 @@ def get_argparse():
 
 def train(args):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(torch.cuda.is_available())
     print('Use device:', device)
 
     # 图片augment
@@ -73,6 +74,9 @@ def train(args):
     model = resnet.ResNet_18()
     if os.path.exists(args.model):
         model.load_state_dict(torch.load(args.model))
+        print("Load pretrained model from {}".format(args.model))
+    else:
+        print("No pretrained model found")
     num_ftrs = model.fc.in_features  # 获取全连接层的输入特征数量
     model.fc = torch.nn.Linear(num_ftrs, len(flower_list))  # 修改输出维度为5
     model = model.to(device)
@@ -139,9 +143,8 @@ def train(args):
 
         if val_accurate > best_acc:
             best_acc = val_accurate
-            save_path = os.path.join(args.save_dir,args.model.split('.')[0]+'_best.pth')
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+            save_path = os.path.join(args.save_dir, 'best.pth')
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)  # 确保目录存在
             torch.save(model.state_dict(), save_path)
 
     m,s = divmod(total_time,60)

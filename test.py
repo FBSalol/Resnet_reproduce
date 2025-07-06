@@ -13,7 +13,7 @@ def get_argparse():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path',type=str,default='./dataset/show',help='path to dataset')
-    parser.add_argument('--checkpoint',type=str,default='./checkpoint/resnet18_best.pth',help='checkpoint path')
+    parser.add_argument('--checkpoint',type=str,default='./checkpoint/best.pth',help='checkpoint path')
     parser.add_argument('--num_classes',type=int,default=5,help='number of classes')
 
     return parser
@@ -42,8 +42,6 @@ def main():
     model.to(device)
 
     model.eval()
-    fig , axes = plt.subplots(2,5,figsize=(15,6))
-    axes = axes.flatten()
 
     for idx, image_path in enumerate(image_path):
 
@@ -62,21 +60,8 @@ def main():
         class_name = class_indict[str(pred[0])]  # 获取类别名称
         prob = predict[0, pred[0]].item()  # 获取预测概率
         print_res = "class: {} prob: {:.3f}".format(class_name, prob)
-
-        # 显示图片和标题
-        mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1).to(device)
-        std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1).to(device)
-        img_for_display = img.squeeze().mul(std).add(mean).permute(1, 2, 0).cpu().numpy() # 调整通道顺序并移动到 CPU
-        axes[idx].imshow(img_for_display)  # 显示图像
-        axes[idx].set_title(print_res)
-        axes[idx].axis('off')  # 不显示坐标轴
-
-    # 隐藏多余的子图（如果有）
-    for idx in range(len(image_path), len(axes)):
-        axes[idx].axis('off')
-
-    plt.tight_layout()
-    plt.show()
+        print(f"Image: {image_path}, {print_res}")
+        print("prediction:", predict)
 
 
 if __name__ == '__main__':
