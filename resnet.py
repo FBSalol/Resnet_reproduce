@@ -14,39 +14,6 @@ def conv1x1(in_channel, out_channel, stride=1):
 def norm_layer(channel):
     return nn.BatchNorm2d(channel)
 
-'''
-class BasicBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, stride=1):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv3x3(in_channels, out_channels, stride)
-        self.bn1 = norm_layer(out_channels)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(out_channels, out_channels)
-        self.bn2 = norm_layer(out_channels)
-        
-        # 图中右边shortcut（残差）的部分
-        # 论文中模型架构的虚线部分，需要下采样，保证输出与identity相加时，通道形状一致
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_channels != out_channels: # stride不为1会导致形状不一样
-            self.shortcut = nn.Sequential(
-                conv1x1(in_channels, out_channels, stride=stride),
-                norm_layer(out_channels)
-            )
-
-    def forward(self, x):
-        identity = x
-        # 图中左边正常的前向传播
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        out += self.shortcut(identity)
-        out = self.relu(out)
-        return out
-'''
-
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
         super(BasicBlock, self).__init__()
